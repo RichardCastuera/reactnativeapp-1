@@ -5,23 +5,23 @@ import {
   View,
   TextInput,
   Button,
-  ScrollView,
   FlatList,
 } from "react-native";
+import GoalItem from "./components/GoalItem";
+import GoalInput from "./components/GoalInput";
 
 export default function App() {
-  const [enteredGoalText, setEnteredGoalText] = useState("");
   const [courseGoals, setCourseGoals] = useState([]);
 
-  function goalInputHandler(enteredText) {
-    setEnteredGoalText(enteredText);
-  }
-
-  function addGoalHandler() {
+  function addGoalHandler(enteredGoalText) {
     setCourseGoals((currentCourseGoals) => [
       ...currentCourseGoals,
       { text: enteredGoalText, id: Math.random().toString() },
     ]);
+  }
+
+  function deleteGoalHandler() {
+    console.log("DELETE");
   }
 
   return (
@@ -29,25 +29,17 @@ export default function App() {
       <View>
         <Text style={styles.styleTitle}>My Goals</Text>
       </View>
-      <View style={styles.userGoals}>
-        <TextInput
-          style={styles.textInput}
-          placeholder="Your course goal!"
-          onChangeText={goalInputHandler}
-        />
-        <Button title="Add Goal" onPress={addGoalHandler} />
-      </View>
+      <GoalInput onAddGoal={addGoalHandler} />
       <View style={styles.userAddedGoals}>
         <FlatList
           data={courseGoals}
           alwaysBounceVertical={false}
           renderItem={(itemData) => {
             return (
-              <View style={styles.listGoalItemStyle}>
-                <Text style={styles.listGoalTextStyle}>
-                  {itemData.item.text}
-                </Text>
-              </View>
+              <GoalItem
+                text={itemData.item.text}
+                onDeleteItem={deleteGoalHandler}
+              />
             );
           }}
           keyExtractor={(item, index) => {
@@ -86,16 +78,5 @@ const styles = StyleSheet.create({
   userAddedGoals: {
     flex: 5,
     marginVertical: 20,
-  },
-  listGoalItemStyle: {
-    marginVertical: 5,
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-    backgroundColor: "#C9E4DE",
-    borderRadius: 8,
-  },
-  listGoalTextStyle: {
-    fontSize: 18,
-    color: "white",
   },
 });
